@@ -25,12 +25,25 @@ function AddBudgetItem() {
   const handleSubmit = async () => {
     setError("");
 
+    // amount validations
+    if (!amount) {
+      setError("Amount is required");
+      return;
+    }
+
+    if (Number(amount) <= 0) {
+      setError("Amount must be a positive number");
+      return;
+    }
+
     let finalCategory = category;
 
+    // income logic
     if (type === "income") {
       finalCategory = "Income";
     }
 
+    // expense logic
     if (type === "expense") {
       if (!category) {
         setError("Please choose a category");
@@ -44,11 +57,6 @@ function AddBudgetItem() {
         }
         finalCategory = customCategory.trim();
       }
-    }
-
-    if (!amount) {
-      setError("Amount is required");
-      return;
     }
 
     try {
@@ -70,11 +78,14 @@ function AddBudgetItem() {
       <h2>Add Budget Item</h2>
 
       {/* TYPE */}
-      <select value={type} onChange={(e) => {
-        setType(e.target.value);
-        setCategory("");
-        setCustomCategory("");
-      }}>
+      <select
+        value={type}
+        onChange={(e) => {
+          setType(e.target.value);
+          setCategory("");
+          setCustomCategory("");
+        }}
+      >
         <option value="expense">Expense</option>
         <option value="income">Income</option>
       </select>
@@ -82,7 +93,10 @@ function AddBudgetItem() {
       {/* CATEGORY – only for expenses */}
       {type === "expense" && (
         <>
-          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="">Select category</option>
             {EXPENSE_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
@@ -104,6 +118,8 @@ function AddBudgetItem() {
       {/* AMOUNT */}
       <input
         type="number"
+        min="0.01"
+        step="0.01"
         placeholder="Amount"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}

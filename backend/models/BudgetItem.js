@@ -7,6 +7,13 @@ const budgetItemSchema = new mongoose.Schema(
       ref: "Family",
       required: true,
     },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     type: {
       type: String,
       enum: ["income", "expense"],
@@ -29,7 +36,7 @@ const budgetItemSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("BudgetItem", budgetItemSchema);

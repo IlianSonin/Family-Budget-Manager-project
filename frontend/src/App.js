@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FamilyChoice from "./pages/FamilyChoice";
 import CreateFamily from "./pages/CreateFamily";
+import JoinFamily from "./pages/JoinFamily";
 import AddBudgetItem from "./pages/AddBudgetItem";
 
 function App() {
@@ -39,6 +40,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateFamily />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/family/join"
+          element={
+            <ProtectedRoute>
+              <JoinFamily />
             </ProtectedRoute>
           }
         />
