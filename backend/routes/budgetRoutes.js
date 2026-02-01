@@ -1,9 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
-const budgetController = require("../controllers/budgetController");
 
-router.post("/add", auth, budgetController.addItem);
-router.get("/summary", auth, budgetController.getMonthSummary);
+const budgetController = require("../controllers/budgetController");
+const authMiddleware = require("../middleware/authMiddleware");
+
+router.post("/add", authMiddleware, budgetController.addItem);
+router.get("/summary", authMiddleware, budgetController.getMonthSummary);
+router.get(
+  "/categories",
+  authMiddleware,
+  budgetController.getCategoriesSummary,
+);
+router.get("/recent", authMiddleware, budgetController.getRecentActions);
+router.put("/edit", authMiddleware, budgetController.editItem);
+router.delete("/delete", authMiddleware, budgetController.deleteItem);
 
 module.exports = router;
