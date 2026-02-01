@@ -1,5 +1,6 @@
 const BudgetItem = require("../models/BudgetItem");
 const User = require("../models/User");
+const EditPermission = require("../models/EditPermission");
 
 // הוספת פריט תקציב
 exports.addItem = async (req, res) => {
@@ -139,6 +140,94 @@ exports.getRecentActions = async (req, res) => {
       .limit(5);
 
     res.json(actions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Edit a budget item (with permission checking)
+exports.editItem = async (req, res) => {
+  const { budgetItemId, category, amount, note } = req.body;
+
+  if (!budgetItemId) {
+    return res.status(400).json({ message: "Missing budgetItemId" });
+  }
+
+  if (amount !== undefined && amount <= 0) {
+    return res.status(400).json({ message: "Amount must be positive" });
+  }
+
+  try {
+    const budgetItem = await BudgetItem.findById(budgetItemId);
+    if (!budgetItem) {
+      return res.status(404).json({ message: "Budget item not found" });
+    }
+
+    const isOwner = budgetItem.createdBy.toString() === req.userId;
+
+    // Check permission if not owner
+    if (!isOwner) {
+      const permission = await EditPermission.findOne({
+        budgetItemId,
+        requestedBy: req.userId,
+        status: "approved",
+      });
+
+      if (!permission) {
+        return res.status(403).json({
+          message:
+            "You don't have permission to edit this item. Request permission from the owner.",
+        });
+      }
+    }
+
+    // Update fields
+    if (category !== undefined) budgetItem.category = category;
+    if (amount !== undefined) budgetItem.amount = amount;
+    if (note !== undefined) budgetItem.note = note;
+
+    // Set editedBy if not owner
+    if (!isOwner) {
+      budgetItem.editedBy = req.userId;
+    }
+
+    await budgetItem.save();
+
+    res.json({
+      message: "Item updated successfully",
+      item: budgetItem,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Delete a budget item (only owner can delete)
+exports.deleteItem = async (req, res) => {
+  const { budgetItemId } = req.body;
+
+  if (!budgetItemId) {
+    return res.status(400).json({ message: "Missing budgetItemId" });
+  }
+
+  try {
+    const budgetItem = await BudgetItem.findById(budgetItemId);
+    if (!budgetItem) {
+      return res.status(404).json({ message: "Budget item not found" });
+    }
+
+    // Only owner can delete
+    if (budgetItem.createdBy.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Only the owner can delete this item",
+      });
+    }
+
+    await BudgetItem.findByIdAndDelete(budgetItemId);
+
+    res.json({ message: "Item deleted successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

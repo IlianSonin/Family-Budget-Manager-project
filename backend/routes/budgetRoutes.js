@@ -6,7 +6,13 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/add", authMiddleware, budgetController.addItem);
 router.get("/summary", authMiddleware, budgetController.getMonthSummary);
-router.get("/categories", authMiddleware, budgetController.getCategoriesSummary);
+router.get(
+  "/categories",
+  authMiddleware,
+  budgetController.getCategoriesSummary,
+);
 router.get("/recent", authMiddleware, budgetController.getRecentActions);
+router.put("/edit", authMiddleware, budgetController.editItem);
+router.delete("/delete", authMiddleware, budgetController.deleteItem);
 
 module.exports = router;

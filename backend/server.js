@@ -6,6 +6,9 @@ require("dotenv").config({ quiet: true });
 const authRoutes = require("./routes/authRoutes");
 const familyRoutes = require("./routes/familyRoutes");
 const budgetRoutes = require("./routes/budgetRoutes");
+const permissionRoutes = require("./routes/permissionRoutes");
+const messageRoutes = require("./routes/messageRoutes");
+const shoppingRoutes = require("./routes/shoppingRoutes");
 
 const app = express();
 const PORT = 3000;
@@ -18,6 +21,9 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/family", familyRoutes);
 app.use("/api/budget", budgetRoutes);
+app.use("/api/permission", permissionRoutes);
+app.use("/api/message", messageRoutes);
+app.use("/api/shopping", shoppingRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running");

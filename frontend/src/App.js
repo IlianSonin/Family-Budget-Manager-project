@@ -7,62 +7,77 @@ import FamilyChoice from "./pages/FamilyChoice";
 import CreateFamily from "./pages/CreateFamily";
 import JoinFamily from "./pages/JoinFamily";
 import AddBudgetItem from "./pages/AddBudgetItem";
+import PermissionRequests from "./pages/PermissionRequests";
+import { NotificationProvider } from "./context/NotificationContext";
+import NotificationContainer from "./components/NotificationContainer";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
+    <NotificationProvider>
+      <NotificationContainer />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/family"
-          element={
-            <ProtectedRoute>
-              <FamilyChoice />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/family"
+            element={
+              <ProtectedRoute>
+                <FamilyChoice />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/family/create"
-          element={
-            <ProtectedRoute>
-              <CreateFamily />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/family/create"
+            element={
+              <ProtectedRoute>
+                <CreateFamily />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/family/join"
-          element={
-            <ProtectedRoute>
-              <JoinFamily />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/family/join"
+            element={
+              <ProtectedRoute>
+                <JoinFamily />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/budget/add"
-          element={
-            <ProtectedRoute>
-              <AddBudgetItem />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/budget/add"
+            element={
+              <ProtectedRoute>
+                <AddBudgetItem />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/permissions"
+            element={
+              <ProtectedRoute>
+                <PermissionRequests />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </NotificationProvider>
   );
 }
 

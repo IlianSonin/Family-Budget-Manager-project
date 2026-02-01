@@ -1,48 +1,35 @@
 const mongoose = require("mongoose");
 
-const budgetItemSchema = new mongoose.Schema(
+const shoppingItemSchema = new mongoose.Schema(
   {
     familyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Family",
       required: true,
     },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
-    editedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
-
-    type: {
-      type: String,
-      enum: ["income", "expense"],
-      required: true,
-    },
-    category: {
+    name: {
       type: String,
       required: true,
     },
-    amount: {
-      type: Number,
-      required: true,
+    quantity: {
+      type: String,
+      default: "1",
     },
     note: {
       type: String,
       default: "",
     },
-    date: {
-      type: String, // YYYY-MM
-      required: true,
+    isPurchased: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model("BudgetItem", budgetItemSchema);
+module.exports = mongoose.model("ShoppingItem", shoppingItemSchema);
