@@ -6,6 +6,7 @@ function JoinFamily() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleJoin = async () => {
@@ -16,6 +17,8 @@ function JoinFamily() {
       return;
     }
 
+    setLoading(true);
+
     try {
       await api.post("/family/join", {
         name,
@@ -25,29 +28,101 @@ function JoinFamily() {
       navigate("/home");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to join family");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleJoin();
     }
   };
 
   return (
-    <div>
-      <h2>Join Family</h2>
+    <div className="page-wrapper">
+      <div style={{ maxWidth: 420, margin: "60px auto", padding: 0 }}>
+        <div
+          className="card"
+          style={{ boxShadow: "0 8px 32px rgba(30, 136, 229, 0.2)" }}
+        >
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <h2 style={{ marginBottom: 8 }}>Join Family</h2>
+            <p style={{ color: "#757575", marginBottom: 0 }}>
+              Enter the family details to join an existing group
+            </p>
+          </div>
 
-      <input
-        placeholder="Family name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+          {error && (
+            <div className="alert alert-error" style={{ marginBottom: 16 }}>
+              {error}
+            </div>
+          )}
 
-      <input
-        type="password"
-        placeholder="Family password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+          <div className="form-group">
+            <label>Family Name</label>
+            <input
+              type="text"
+              placeholder="The Smith Family"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+            />
+          </div>
 
-      <button onClick={handleJoin}>Join</button>
+          <div className="form-group">
+            <label>Family Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+            />
+          </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+          <button
+            className="btn btn-primary"
+            onClick={handleJoin}
+            disabled={loading}
+            style={{
+              width: "100%",
+              padding: "14px 24px",
+              fontSize: "1rem",
+            }}
+          >
+            {loading ? "Joining..." : "Join Family"}
+          </button>
+
+          <div
+            style={{
+              textAlign: "center",
+              paddingTop: 16,
+              borderTop: "1px solid #eeeeee",
+              marginTop: 16,
+            }}
+          >
+            <p style={{ marginBottom: 0 }}>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/family");
+                }}
+                style={{
+                  color: "#1e88e5",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                ← Go Back
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

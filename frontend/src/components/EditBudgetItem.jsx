@@ -122,7 +122,7 @@ function EditBudgetItem({ itemId, onClose, onSaved }) {
       setPermissionId(res.data.permission._id);
       setRequestStatus("pending");
       setSuccess("Permission request sent! Waiting for approval...");
-      addNotification("📨 Permission request sent to owner!", "info", 4000);
+      addNotification("Permission request sent to owner!", "info", 4000);
 
       // Send initial message if provided
       if (messageText.trim()) {
@@ -156,7 +156,7 @@ function EditBudgetItem({ itemId, onClose, onSaved }) {
       });
 
       setMessageText("");
-      addNotification("💬 Message sent!", "success", 2000);
+      addNotification("Message sent!", "success", 2000);
       setTimeout(() => setSuccess(""), 2000);
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Failed to send message";
@@ -261,7 +261,7 @@ function EditBudgetItem({ itemId, onClose, onSaved }) {
                 onClick={handleRequestPermission}
                 style={primaryButtonStyle}
               >
-                🔒 Send Request
+                Send Request
               </button>
               <button onClick={onClose} style={secondaryButtonStyle}>
                 Cancel

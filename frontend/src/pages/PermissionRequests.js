@@ -25,7 +25,7 @@ function PermissionRequests() {
       if (incomingRes.data.length > lastIncomingCountRef.current) {
         const newCount = incomingRes.data.length - lastIncomingCountRef.current;
         addNotification(
-          `🔔 ${newCount} new edit request${newCount > 1 ? "s" : ""}!`,
+          `${newCount} new edit request${newCount > 1 ? "s" : ""}!`,
           "info",
           5000,
         );
@@ -40,7 +40,7 @@ function PermissionRequests() {
       ).length;
       if (newApproved > prevApproved) {
         addNotification(
-          "✅ One of your permission requests was approved!",
+          "One of your permission requests was approved!",
           "success",
           5000,
         );
@@ -54,7 +54,7 @@ function PermissionRequests() {
       ).length;
       if (newRejected > prevRejected) {
         addNotification(
-          "❌ One of your permission requests was rejected.",
+          "One of your permission requests was rejected.",
           "warning",
           5000,
         );
@@ -139,7 +139,7 @@ function PermissionRequests() {
         content: newMessage,
       });
       setNewMessage("");
-      addNotification("💬 Message sent!", "success", 2000);
+      addNotification("Message sent!", "success", 2000);
       loadMessages(permissionId);
     } catch (err) {
       addNotification(
@@ -152,355 +152,375 @@ function PermissionRequests() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: 16, maxWidth: 900, margin: "0 auto" }}>
-      <h2>Edit Permission Requests</h2>
+    <div className="page-wrapper">
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ color: "#1e88e5", marginBottom: 8 }}>
+            Edit Permission Requests
+          </h1>
+          <p style={{ color: "#757575" }}>
+            Manage requests to edit family budget items
+          </p>
+        </div>
 
-      {selectedRequest ? (
-        <div style={detailsStyle}>
-          <div style={detailsHeaderStyle}>
-            <h3 style={{ margin: 0 }}>
-              Request from {selectedRequest.requestedBy?.name || "Unknown"}
-            </h3>
-            <button
-              onClick={() => setSelectedRequest(null)}
-              style={closeButtonStyle}
-            >
-              ✕
-            </button>
-          </div>
-
-          <div style={itemDetailsStyle}>
-            <p>
-              <strong>Item:</strong> {selectedRequest.budgetItemId?.category} —
-              ₪{selectedRequest.budgetItemId?.amount}
-            </p>
-            <p>
-              <strong>Type:</strong> {selectedRequest.budgetItemId?.type}
-            </p>
-            {selectedRequest.reason && (
-              <p
+        {selectedRequest ? (
+          <div
+            className="card"
+            style={{ boxShadow: "0 8px 32px rgba(30, 136, 229, 0.2)" }}
+          >
+            <div className="card-header" style={{ marginBottom: 20 }}>
+              <h3 style={{ margin: 0 }}>
+                Request from {selectedRequest.requestedBy?.name || "Unknown"}
+              </h3>
+              <button
+                onClick={() => setSelectedRequest(null)}
                 style={{
-                  backgroundColor: "#f5f5f5",
-                  padding: 8,
-                  borderRadius: 4,
+                  background: "none",
+                  border: "none",
+                  fontSize: 24,
+                  cursor: "pointer",
+                  color: "#999",
+                  padding: 0,
                 }}
               >
-                <strong>Reason:</strong> {selectedRequest.reason}
-              </p>
-            )}
-          </div>
+                ✕
+              </button>
+            </div>
 
-          <div style={messagesStyle}>
-            <h4>Messages</h4>
-            {messages.length === 0 ? (
-              <p style={{ fontSize: 13, opacity: 0.7 }}>No messages yet</p>
-            ) : (
-              <div style={messagesListStyle}>
-                {messages.map((msg) => (
-                  <div
-                    key={msg._id}
-                    style={{
-                      marginBottom: 12,
-                      padding: 10,
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: 4,
-                      borderLeft: "3px solid #2196F3",
-                    }}
-                  >
-                    <p
+            <div
+              style={{
+                background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
+                padding: 16,
+                borderRadius: 8,
+                marginBottom: 20,
+                borderLeft: "4px solid #1e88e5",
+              }}
+            >
+              <h4 style={{ marginTop: 0, marginBottom: 8, color: "#1e88e5" }}>
+                Item Details
+              </h4>
+              <p style={{ marginBottom: 8 }}>
+                <strong>Category:</strong>{" "}
+                {selectedRequest.budgetItemId?.category}
+              </p>
+              <p style={{ marginBottom: 8 }}>
+                <strong>Amount:</strong> ₪{selectedRequest.budgetItemId?.amount}
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                <strong>Type:</strong>{" "}
+                {selectedRequest.budgetItemId?.type === "income"
+                  ? "Income"
+                  : "Expense"}
+              </p>
+              {selectedRequest.reason && (
+                <p
+                  style={{
+                    marginTop: 12,
+                    padding: 12,
+                    background: "#ffffff",
+                    borderRadius: 6,
+                    borderLeft: "3px solid #ff9800",
+                  }}
+                >
+                  <strong>Reason:</strong> {selectedRequest.reason}
+                </p>
+              )}
+            </div>
+
+            <div style={{ marginBottom: 20 }}>
+              <h4 style={{ marginBottom: 12, color: "#212121" }}>Messages</h4>
+              {messages.length === 0 ? (
+                <p style={{ textAlign: "center", color: "#999", padding: 20 }}>
+                  No messages yet. Start the conversation!
+                </p>
+              ) : (
+                <div
+                  style={{
+                    background: "#f5f5f5",
+                    borderRadius: 8,
+                    padding: 12,
+                    maxHeight: 300,
+                    overflowY: "auto",
+                    marginBottom: 12,
+                  }}
+                >
+                  {messages.map((msg) => (
+                    <div
+                      key={msg._id}
                       style={{
-                        margin: "0 0 4px 0",
-                        fontSize: 12,
-                        fontWeight: "bold",
+                        marginBottom: 12,
+                        padding: 12,
+                        backgroundColor: "#ffffff",
+                        borderRadius: 6,
+                        borderLeft: "4px solid #1e88e5",
                       }}
                     >
-                      {msg.senderId?.name || "Unknown"}
-                    </p>
-                    <p style={{ margin: 0, fontSize: 13 }}>{msg.content}</p>
-                    <p
-                      style={{
-                        margin: "4px 0 0 0",
-                        fontSize: 11,
-                        opacity: 0.6,
-                      }}
-                    >
-                      {new Date(msg.createdAt).toLocaleTimeString()}
-                    </p>
-                  </div>
-                ))}
+                      <p
+                        style={{
+                          margin: "0 0 4px 0",
+                          fontWeight: 600,
+                          color: "#212121",
+                        }}
+                      >
+                        {msg.senderId?.name || "Unknown"}
+                      </p>
+                      <p style={{ margin: 0, color: "#555", lineHeight: 1.5 }}>
+                        {msg.content}
+                      </p>
+                      <p
+                        style={{
+                          margin: "4px 0 0 0",
+                          fontSize: 11,
+                          color: "#999",
+                        }}
+                      >
+                        {new Date(msg.createdAt).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div>
+                <textarea
+                  placeholder="Send a message to discuss this request..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: 12,
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    border: "2px solid #bbdefb",
+                    fontFamily: "inherit",
+                    fontSize: 14,
+                    minHeight: 70,
+                    resize: "vertical",
+                  }}
+                />
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    handleSendMessage(
+                      selectedRequest._id,
+                      selectedRequest.requestedBy._id,
+                    )
+                  }
+                  style={{ width: "100%" }}
+                >
+                  Send Message
+                </button>
+              </div>
+            </div>
+
+            {tab === "incoming" && (
+              <div style={{ display: "flex", gap: 12 }}>
+                <button
+                  className="btn btn-success"
+                  onClick={() => handleApprove(selectedRequest._id)}
+                  style={{ flex: 1 }}
+                >
+                  Approve
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleReject(selectedRequest._id)}
+                  style={{ flex: 1 }}
+                >
+                  Reject
+                </button>
               </div>
             )}
 
-            <div style={{ marginTop: 12 }}>
-              <textarea
-                placeholder="Send a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                style={messageInputStyle}
-              />
-              <button
-                onClick={() =>
-                  handleSendMessage(
-                    selectedRequest._id,
-                    selectedRequest.requestedBy._id,
-                  )
-                }
-                style={primaryButtonStyle}
-              >
-                Send Message
-              </button>
-            </div>
-          </div>
-
-          {tab === "incoming" && (
-            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-              <button
-                onClick={() => handleApprove(selectedRequest._id)}
-                style={approveButtonStyle}
-              >
-                ✓ Approve
-              </button>
-              <button
-                onClick={() => handleReject(selectedRequest._id)}
-                style={rejectButtonStyle}
-              >
-                ✕ Reject
-              </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <>
-          <div style={{ marginBottom: 20, borderBottom: "2px solid #ddd" }}>
             <button
-              onClick={() => setTab("incoming")}
-              style={{
-                padding: "10px 20px",
-                marginRight: 10,
-                backgroundColor: tab === "incoming" ? "#4CAF50" : "#eee",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: tab === "incoming" ? "bold" : "normal",
-              }}
+              className="btn btn-secondary"
+              onClick={() => setSelectedRequest(null)}
+              style={{ width: "100%", marginTop: 12 }}
             >
-              Requests For My Items ({incomingRequests.length})
-            </button>
-            <button
-              onClick={() => setTab("my")}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: tab === "my" ? "#4CAF50" : "#eee",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: tab === "my" ? "bold" : "normal",
-              }}
-            >
-              My Requests ({myRequests.length})
+              Go Back
             </button>
           </div>
+        ) : (
+          <>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginBottom: 24,
+                borderBottom: "2px solid #eeeeee",
+                paddingBottom: 12,
+              }}
+            >
+              <button
+                onClick={() => setTab("incoming")}
+                className="btn"
+                style={{
+                  background:
+                    tab === "incoming"
+                      ? "linear-gradient(135deg, #1e88e5 0%, #64b5f6 100%)"
+                      : "#f5f5f5",
+                  color: tab === "incoming" ? "#fff" : "#212121",
+                  fontSize: "1rem",
+                  padding: "10px 20px",
+                }}
+              >
+                Requests For My Items ({incomingRequests.length})
+              </button>
+              <button
+                onClick={() => setTab("my")}
+                className="btn"
+                style={{
+                  background:
+                    tab === "my"
+                      ? "linear-gradient(135deg, #1e88e5 0%, #64b5f6 100%)"
+                      : "#f5f5f5",
+                  color: tab === "my" ? "#fff" : "#212121",
+                  fontSize: "1rem",
+                  padding: "10px 20px",
+                }}
+              >
+                My Requests ({myRequests.length})
+              </button>
+            </div>
 
-          {tab === "incoming" && (
-            <div>
-              <h3>Requests For Your Items</h3>
-              {incomingRequests.length === 0 ? (
-                <p>No pending requests</p>
-              ) : (
-                incomingRequests.map((req) => (
-                  <div
-                    key={req._id}
-                    onClick={() => setSelectedRequest(req)}
-                    style={requestCardStyle}
-                  >
-                    <div style={{ flex: 1 }}>
-                      <h4>{req.requestedBy?.name || "Unknown User"}</h4>
-                      <p
-                        style={{ margin: "4px 0", fontSize: 14, opacity: 0.7 }}
-                      >
-                        Wants to edit:{" "}
-                        <strong>{req.budgetItemId?.category}</strong> — ₪
-                        {req.budgetItemId?.amount}
-                      </p>
-                      <p
-                        style={{ margin: "4px 0", fontSize: 12, opacity: 0.6 }}
-                      >
-                        {new Date(req.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-                    <div style={{ color: "#2196F3", fontSize: 18 }}>→</div>
+            {tab === "incoming" && (
+              <div>
+                <h3 style={{ marginBottom: 20, color: "#212121" }}>
+                  Requests For Your Items
+                </h3>
+                {incomingRequests.length === 0 ? (
+                  <div className="card" style={{ textAlign: "center" }}>
+                    <p style={{ color: "#999", marginBottom: 0 }}>
+                      No pending requests
+                    </p>
                   </div>
-                ))
-              )}
-            </div>
-          )}
-
-          {tab === "my" && (
-            <div>
-              <h3>My Edit Requests</h3>
-              {myRequests.length === 0 ? (
-                <p>You haven't requested any permissions</p>
-              ) : (
-                myRequests.map((req) => (
-                  <div
-                    key={req._id}
-                    onClick={() => setSelectedRequest(req)}
-                    style={requestCardStyle}
-                  >
-                    <div style={{ flex: 1 }}>
-                      <h4>
-                        Owner:{" "}
-                        <strong>{req.itemOwner?.name || "Unknown"}</strong>
-                      </h4>
-                      <p
-                        style={{ margin: "4px 0", fontSize: 14, opacity: 0.7 }}
+                ) : (
+                  <div style={{ display: "grid", gap: 12 }}>
+                    {incomingRequests.map((req) => (
+                      <div
+                        key={req._id}
+                        onClick={() => setSelectedRequest(req)}
+                        className="card"
+                        style={{
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.transform = "translateY(-2px)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.transform = "translateY(0)")
+                        }
                       >
-                        Item: <strong>{req.budgetItemId?.category}</strong> — ₪
-                        {req.budgetItemId?.amount}
-                      </p>
-                      <p style={{ margin: "4px 0", fontSize: 14 }}>
-                        Status:{" "}
-                        <span
+                        <div
                           style={{
-                            padding: "2px 8px",
-                            backgroundColor:
-                              req.status === "approved"
-                                ? "#d4edda"
-                                : req.status === "rejected"
-                                  ? "#f8d7da"
-                                  : "#fff3cd",
-                            color:
-                              req.status === "approved"
-                                ? "#155724"
-                                : req.status === "rejected"
-                                  ? "#721c24"
-                                  : "#856404",
-                            borderRadius: 4,
-                            fontSize: 12,
-                            fontWeight: "bold",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "start",
                           }}
                         >
-                          {req.status.toUpperCase()}
-                        </span>
-                      </p>
-                    </div>
-                    <div style={{ color: "#2196F3", fontSize: 18 }}>→</div>
+                          <div style={{ flex: 1 }}>
+                            <h4 style={{ marginBottom: 8 }}>
+                              {req.requestedBy?.name || "Unknown User"}
+                            </h4>
+                            <p style={{ marginBottom: 8, color: "#757575" }}>
+                              Wants to edit:{" "}
+                              <strong>{req.budgetItemId?.category}</strong> — ₪
+                              {req.budgetItemId?.amount}
+                            </p>
+                            <p
+                              style={{
+                                marginBottom: 0,
+                                fontSize: 12,
+                                color: "#999",
+                              }}
+                            >
+                              {new Date(req.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+                          <div style={{ fontSize: 24, color: "#1e88e5" }}>
+                            →
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))
-              )}
-            </div>
-          )}
-        </>
-      )}
+                )}
+              </div>
+            )}
+
+            {tab === "my" && (
+              <div>
+                <h3 style={{ marginBottom: 20, color: "#212121" }}>
+                  My Edit Requests
+                </h3>
+                {myRequests.length === 0 ? (
+                  <div className="card" style={{ textAlign: "center" }}>
+                    <p style={{ color: "#999", marginBottom: 0 }}>
+                      You haven't requested any permissions
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ display: "grid", gap: 12 }}>
+                    {myRequests.map((req) => (
+                      <div
+                        key={req._id}
+                        onClick={() => setSelectedRequest(req)}
+                        className="card"
+                        style={{
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.transform = "translateY(-2px)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.transform = "translateY(0)")
+                        }
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "start",
+                          }}
+                        >
+                          <div style={{ flex: 1 }}>
+                            <h4 style={{ marginBottom: 8 }}>
+                              Owner:{" "}
+                              <strong>
+                                {req.itemOwner?.name || "Unknown"}
+                              </strong>
+                            </h4>
+                            <p style={{ marginBottom: 8, color: "#757575" }}>
+                              Item:{" "}
+                              <strong>{req.budgetItemId?.category}</strong> — ₪
+                              {req.budgetItemId?.amount}
+                            </p>
+                            <p style={{ marginBottom: 0 }}>
+                              Status:{" "}
+                              <span
+                                className={`badge badge-${req.status === "approved" ? "success" : req.status === "rejected" ? "danger" : "warning"}`}
+                              >
+                                {req.status.toUpperCase()}
+                              </span>
+                            </p>
+                          </div>
+                          <div style={{ fontSize: 24, color: "#1e88e5" }}>
+                            →
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
-
-const detailsStyle = {
-  backgroundColor: "#f9f9f9",
-  border: "1px solid #ddd",
-  borderRadius: 8,
-  padding: 16,
-  marginTop: 12,
-};
-
-const detailsHeaderStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 16,
-  paddingBottom: 12,
-  borderBottom: "1px solid #ddd",
-};
-
-const closeButtonStyle = {
-  backgroundColor: "transparent",
-  border: "none",
-  fontSize: 24,
-  cursor: "pointer",
-  color: "#999",
-  padding: 0,
-};
-
-const itemDetailsStyle = {
-  backgroundColor: "white",
-  padding: 12,
-  borderRadius: 4,
-  marginBottom: 16,
-  border: "1px solid #eee",
-};
-
-const messagesStyle = {
-  marginBottom: 16,
-};
-
-const messagesListStyle = {
-  backgroundColor: "white",
-  padding: 12,
-  borderRadius: 4,
-  marginBottom: 12,
-  maxHeight: 300,
-  overflowY: "auto",
-  border: "1px solid #eee",
-};
-
-const messageInputStyle = {
-  width: "100%",
-  padding: 10,
-  marginBottom: 8,
-  borderRadius: 4,
-  border: "1px solid #ddd",
-  fontFamily: "inherit",
-  fontSize: 13,
-  height: 60,
-  boxSizing: "border-box",
-};
-
-const primaryButtonStyle = {
-  width: "100%",
-  padding: 10,
-  backgroundColor: "#2196F3",
-  color: "white",
-  border: "none",
-  borderRadius: 4,
-  cursor: "pointer",
-  fontSize: 13,
-  fontWeight: "500",
-};
-
-const approveButtonStyle = {
-  flex: 1,
-  padding: 10,
-  backgroundColor: "#4CAF50",
-  color: "white",
-  border: "none",
-  borderRadius: 4,
-  cursor: "pointer",
-};
-
-const rejectButtonStyle = {
-  flex: 1,
-  padding: 10,
-  backgroundColor: "#f44336",
-  color: "white",
-  border: "none",
-  borderRadius: 4,
-  cursor: "pointer",
-};
-
-const requestCardStyle = {
-  border: "1px solid #ddd",
-  borderRadius: 8,
-  padding: 16,
-  marginBottom: 12,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  cursor: "pointer",
-  transition: "all 0.2s",
-  backgroundColor: "white",
-};
 
 export default PermissionRequests;

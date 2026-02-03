@@ -15,7 +15,7 @@ export function usePermissionUpdates(onUpdate) {
       if (currentCount > lastCountRef.current) {
         const newRequests = currentCount - lastCountRef.current;
         addNotification(
-          `🔔 You have ${newRequests} new edit request${newRequests > 1 ? "s" : ""}!`,
+          `You have ${newRequests} new edit request${newRequests > 1 ? "s" : ""}!`,
           "info",
           5000,
         );

@@ -77,7 +77,7 @@ function ShoppingList() {
         data: { itemId },
       });
 
-      addNotification("🗑️ Item deleted", "info", 2000);
+      addNotification("Item deleted", "info", 2000);
       loadShoppingList();
     } catch (err) {
       addNotification("Failed to delete item", "error");
@@ -89,7 +89,7 @@ function ShoppingList() {
 
     try {
       await api.post("/shopping/clear-purchased");
-      addNotification("🧹 Cleared purchased items!", "success", 2000);
+      addNotification("Cleared purchased items!", "success", 2000);
       loadShoppingList();
     } catch (err) {
       addNotification("Failed to clear purchased items", "error");
@@ -104,9 +104,9 @@ function ShoppingList() {
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <h3 style={{ margin: 0 }}>🛒 Shopping List</h3>
+        <h3 style={{ margin: 0 }}>Shopping List</h3>
         <div style={statsStyle}>
-          <span>📦 {unpurchasedCount}</span>
+          <span>{unpurchasedCount}</span>
           <span>✓ {purchasedCount}</span>
         </div>
       </div>
@@ -148,7 +148,7 @@ function ShoppingList() {
       <div style={listContainerStyle}>
         {items.length === 0 ? (
           <p style={{ textAlign: "center", opacity: 0.6, marginTop: 20 }}>
-            Shopping list is empty 🎉
+            Shopping list is empty
           </p>
         ) : (
           items.map((item) => (
@@ -205,7 +205,7 @@ function ShoppingList() {
 
                 {item.note && (
                   <p style={{ margin: "4px 0", fontSize: 12, opacity: 0.7 }}>
-                    📝 {item.note}
+                    {item.note}
                   </p>
                 )}
 
@@ -235,7 +235,7 @@ function ShoppingList() {
 
       {purchasedCount > 0 && (
         <button onClick={handleClearPurchased} style={clearButtonStyle}>
-          🧹 Clear Purchased ({purchasedCount})
+          Clear Purchased ({purchasedCount})
         </button>
       )}
     </div>
