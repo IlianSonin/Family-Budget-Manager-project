@@ -23,6 +23,7 @@ function Dashboard() {
   const [family, setFamily] = useState(null);
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -34,6 +35,7 @@ function Dashboard() {
 
   const loadData = useCallback(async () => {
     try {
+      setError(null);
       const [summaryRes, categoriesRes, familyRes, recentRes, meRes] =
         await Promise.all([
           api.get("/budget/summary", { params: { month } }),
@@ -50,6 +52,7 @@ function Dashboard() {
       setCurrentUser(meRes.data);
     } catch (err) {
       console.log("Dashboard error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -100,7 +103,7 @@ function Dashboard() {
   const handleDeleteItem = async (itemId) => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
-        await api.delete("/budget/delete", { params: { id: itemId } });
+        await api.delete("/budget/delete", { data: { budgetItemId: itemId } });
         addNotification("Item deleted successfully", "success", 2000);
         loadData(); // Refresh the data
       } catch (err) {
@@ -110,6 +113,7 @@ function Dashboard() {
   };
 
   if (loading) return <p>Loading dashboard...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!summary) return <p>Failed to load budget data</p>;
 
   return (
@@ -297,6 +301,7 @@ function Dashboard() {
                     a.createdBy &&
                     typeof a.createdBy === "object" &&
                     a.createdBy._id === currentUser._id;
+                  const canEdit = a.canEdit || isOwner;
                   const isIncome = a.type === "income";
 
                   return (
@@ -369,14 +374,14 @@ function Dashboard() {
                             className="btn btn-small"
                             onClick={() => setEditingItemId(a._id)}
                             style={{
-                              background: isOwner
+                              background: canEdit
                                 ? "linear-gradient(135deg, #4caf50 0%, #45a049 100%)"
                                 : "linear-gradient(135deg, #64b5f6 0%, #1e88e5 100%)",
                             }}
                           >
-                            {isOwner ? "Edit" : "Request"}
+                            {canEdit ? "Edit" : "Request"}
                           </button>
-                          {isOwner && (
+                          {canEdit && (
                             <button
                               className="btn btn-small"
                               onClick={() => handleDeleteItem(a._id)}

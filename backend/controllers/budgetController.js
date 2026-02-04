@@ -139,7 +139,30 @@ exports.getRecentActions = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
-    res.json(actions);
+    // Add permission info for each item
+    const actionsWithPermissions = await Promise.all(
+      actions.map(async (item) => {
+        const isOwner =
+          item.createdBy && item.createdBy._id.toString() === req.userId;
+        let canEdit = isOwner;
+
+        if (!canEdit) {
+          const permission = await EditPermission.findOne({
+            budgetItemId: item._id,
+            requestedBy: req.userId,
+            status: "approved",
+          });
+          canEdit = !!permission;
+        }
+
+        return {
+          ...item.toObject(),
+          canEdit,
+        };
+      }),
+    );
+
+    res.json(actionsWithPermissions);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -218,10 +241,22 @@ exports.deleteItem = async (req, res) => {
       return res.status(404).json({ message: "Budget item not found" });
     }
 
-    // Only owner can delete
-    if (budgetItem.createdBy.toString() !== req.userId) {
+    // Check if user is owner or has approved edit permission
+    const isOwner = budgetItem.createdBy.toString() === req.userId;
+    let hasPermission = false;
+
+    if (!isOwner) {
+      const permission = await EditPermission.findOne({
+        budgetItemId: budgetItemId,
+        requestedBy: req.userId,
+        status: "approved",
+      });
+      hasPermission = !!permission;
+    }
+
+    if (!isOwner && !hasPermission) {
       return res.status(403).json({
-        message: "Only the owner can delete this item",
+        message: "You don't have permission to delete this item",
       });
     }
 

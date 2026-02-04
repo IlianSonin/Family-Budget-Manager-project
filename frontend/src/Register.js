@@ -55,7 +55,7 @@ function Register() {
       <div
         style={{
           maxWidth: 420,
-          margin: "60px auto",
+          margin: "10px auto",
           padding: 0,
         }}
       >
@@ -63,20 +63,20 @@ function Register() {
           className="card"
           style={{ boxShadow: "0 8px 32px rgba(30, 136, 229, 0.2)" }}
         >
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <h2 style={{ marginBottom: 8 }}>Create Account</h2>
-            <p style={{ color: "#757575", marginBottom: 0 }}>
+          <div style={{ textAlign: "center", marginBottom: 8 }}>
+            <h2 style={{ marginBottom: 2 }}>Create Account</h2>
+            <p style={{ color: "#757575", marginBottom: 0, fontSize: "14px" }}>
               Join your family budget today
             </p>
           </div>
 
           {error && (
-            <div className="alert alert-error" style={{ marginBottom: 16 }}>
+            <div className="alert alert-error" style={{ marginBottom: 8 }}>
               {error}
             </div>
           )}
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: 8 }}>
             <label>Full Name</label>
             <input
               type="text"
@@ -85,10 +85,22 @@ function Register() {
               onChange={(e) => setName(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={loading}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                border: "1px solid #ddd",
+                borderRadius: "6px",
+                fontSize: "16px",
+                transition: "border-color 0.3s ease",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1e88e5")}
+              onBlur={(e) => (e.target.style.borderColor = "#ddd")}
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: 8 }}>
             <label>Email Address</label>
             <input
               type="email"
@@ -97,10 +109,22 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={loading}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                fontSize: "16px",
+                transition: "border-color 0.3s ease",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1e88e5")}
+              onBlur={(e) => (e.target.style.borderColor = "#ddd")}
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: 8 }}>
             <label>Password</label>
             <input
               type="password"
@@ -109,13 +133,25 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={loading}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                fontSize: "16px",
+                transition: "border-color 0.3s ease",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1e88e5")}
+              onBlur={(e) => (e.target.style.borderColor = "#ddd")}
             />
             <p style={{ fontSize: "0.85rem", color: "#999", marginBottom: 0 }}>
               Minimum 6 characters
             </p>
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: 8 }}>
             <label>Confirm Password</label>
             <input
               type="password"
@@ -124,6 +160,18 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={loading}
+              style={{
+                width: "100%",
+                padding: "10px 14px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                fontSize: "16px",
+                transition: "border-color 0.3s ease",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1e88e5")}
+              onBlur={(e) => (e.target.style.borderColor = "#ddd")}
             />
           </div>
 
@@ -133,8 +181,8 @@ function Register() {
             disabled={loading}
             style={{
               width: "100%",
-              marginBottom: 16,
-              padding: "14px 24px",
+              marginBottom: 8,
+              padding: "12px 20px",
               fontSize: "1rem",
             }}
           >
@@ -144,7 +192,7 @@ function Register() {
           <div
             style={{
               textAlign: "center",
-              paddingTop: 16,
+              paddingTop: 8,
               borderTop: "1px solid #eeeeee",
             }}
           >
