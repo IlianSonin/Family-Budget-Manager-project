@@ -35,6 +35,10 @@ const editPermissionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    // Expiration date for approved permissions
+    expiresAt: {
+      type: Date,
+    },
   },
   { timestamps: true },
 );

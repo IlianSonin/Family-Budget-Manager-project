@@ -152,7 +152,9 @@ exports.getRecentActions = async (req, res) => {
             requestedBy: req.userId,
             status: "approved",
           });
-          canEdit = !!permission;
+          canEdit =
+            !!permission &&
+            (!permission.expiresAt || permission.expiresAt > new Date());
         }
 
         return {
@@ -197,7 +199,10 @@ exports.editItem = async (req, res) => {
         status: "approved",
       });
 
-      if (!permission) {
+      if (
+        !permission ||
+        (permission.expiresAt && permission.expiresAt < new Date())
+      ) {
         return res.status(403).json({
           message:
             "You don't have permission to edit this item. Request permission from the owner.",
@@ -251,7 +256,9 @@ exports.deleteItem = async (req, res) => {
         requestedBy: req.userId,
         status: "approved",
       });
-      hasPermission = !!permission;
+      hasPermission =
+        !!permission &&
+        (!permission.expiresAt || permission.expiresAt > new Date());
     }
 
     if (!isOwner && !hasPermission) {

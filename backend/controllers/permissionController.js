@@ -102,6 +102,8 @@ exports.approveEditPermission = async (req, res) => {
     }
 
     permission.status = "approved";
+    // Set expiration to 24 hours from now
+    permission.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await permission.save();
 
     res.json({
@@ -191,10 +193,14 @@ exports.canEditItem = async (req, res) => {
       status: "approved",
     });
 
-    if (permission) {
+    if (
+      permission &&
+      (!permission.expiresAt || permission.expiresAt > new Date())
+    ) {
       return res.json({
         canEdit: true,
         reason: "Permission approved",
+        expiresAt: permission.expiresAt,
       });
     }
 

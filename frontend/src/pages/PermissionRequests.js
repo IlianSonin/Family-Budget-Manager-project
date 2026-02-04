@@ -504,6 +504,18 @@ function PermissionRequests() {
                               >
                                 {req.status.toUpperCase()}
                               </span>
+                              {req.status === "approved" && req.expiresAt && (
+                                <span
+                                  style={{
+                                    marginLeft: 8,
+                                    fontSize: "0.9em",
+                                    color: "#666",
+                                  }}
+                                >
+                                  Expires:{" "}
+                                  {new Date(req.expiresAt).toLocaleString()}
+                                </span>
+                              )}
                             </p>
                           </div>
                           <div style={{ fontSize: 24, color: "#1e88e5" }}>
