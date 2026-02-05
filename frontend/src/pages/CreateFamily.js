@@ -90,7 +90,7 @@ function CreateFamily() {
             <label>Family Password</label>
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -105,7 +105,7 @@ function CreateFamily() {
             <label>Confirm Password</label>
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               onKeyPress={handleKeyPress}

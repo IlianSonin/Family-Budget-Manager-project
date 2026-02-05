@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReactDOM from "react-dom";
 import api from "../services/api";
 
 const EXPENSE_CATEGORIES = [
@@ -11,8 +12,8 @@ const EXPENSE_CATEGORIES = [
   "Other",
 ];
 
-function QuickAddModal({ onClose, onAdded }) {
-  const [type, setType] = useState("expense");
+function QuickAddModal({ onClose, onAdded, initialType = "expense" }) {
+  const [type, setType] = useState(initialType);
   const [category, setCategory] = useState("");
   const [customCategory, setCustomCategory] = useState("");
   const [amount, setAmount] = useState("");
@@ -35,8 +36,7 @@ function QuickAddModal({ onClose, onAdded }) {
         return;
       }
 
-      finalCategory =
-        category === "Other" ? customCategory.trim() : category;
+      finalCategory = category === "Other" ? customCategory.trim() : category;
 
       if (!finalCategory) {
         setError("Please enter a category");
@@ -59,7 +59,7 @@ function QuickAddModal({ onClose, onAdded }) {
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <h3>Add Budget Item</h3>
@@ -120,7 +120,8 @@ function QuickAddModal({ onClose, onAdded }) {
           <button onClick={onClose}>Cancel</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -131,6 +132,7 @@ const overlayStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  zIndex: 10000,
 };
 
 const modalStyle = {
@@ -141,6 +143,7 @@ const modalStyle = {
   display: "flex",
   flexDirection: "column",
   gap: 8,
+  zIndex: 10001,
 };
 
 export default QuickAddModal;

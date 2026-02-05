@@ -12,11 +12,72 @@ function Register() {
 
   const navigate = useNavigate();
 
+  const calculatePasswordStrength = (pwd) => {
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    if (score <= 2) return { level: "Weak", color: "#2196F3", width: "33%" };
+    if (score <= 4) return { level: "Medium", color: "#FF9800", width: "66%" };
+    return { level: "Strong", color: "#4CAF50", width: "100%" };
+  };
+
+  const passwordStrength = calculatePasswordStrength(password);
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) return false;
+
+    const domain = email.split("@")[1].toLowerCase();
+    const commonDomains = [
+      "gmail.com",
+      "outlook.com",
+      "hotmail.com",
+      "yahoo.com",
+      "icloud.com",
+      "aol.com",
+    ];
+
+    // Check exact match
+    if (commonDomains.includes(domain)) return true;
+
+    // Check for common typos (edit distance <= 1)
+    for (let d of commonDomains) {
+      if (editDistance(domain, d) <= 1) return true;
+    }
+
+    return false;
+  };
+
+  const editDistance = (a, b) => {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+    if (a[0] === b[0]) return editDistance(a.slice(1), b.slice(1));
+    return (
+      1 +
+      Math.min(
+        editDistance(a.slice(1), b),
+        editDistance(a, b.slice(1)),
+        editDistance(a.slice(1), b.slice(1)),
+      )
+    );
+  };
+
   const handleRegister = async () => {
     setError("");
 
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError("Invalid email format");
       return;
     }
 
@@ -146,6 +207,39 @@ function Register() {
               onFocus={(e) => (e.target.style.borderColor = "#1e88e5")}
               onBlur={(e) => (e.target.style.borderColor = "#ddd")}
             />
+            {password && (
+              <div style={{ marginTop: 8 }}>
+                <div
+                  style={{
+                    width: "100%",
+                    height: 4,
+                    backgroundColor: "#e0e0e0",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: passwordStrength.width,
+                      height: "100%",
+                      backgroundColor: passwordStrength.color,
+                      transition: "width 0.3s ease, background-color 0.3s ease",
+                    }}
+                  />
+                </div>
+                <p
+                  style={{
+                    fontSize: "0.85rem",
+                    color: passwordStrength.color,
+                    marginTop: 4,
+                    marginBottom: 0,
+                    fontWeight: 500,
+                  }}
+                >
+                  Password Strength: {passwordStrength.level}
+                </p>
+              </div>
+            )}
             <p style={{ fontSize: "0.85rem", color: "#999", marginBottom: 0 }}>
               Minimum 6 characters
             </p>
