@@ -34,6 +34,30 @@ function Settings() {
   return (
     <div className="page-wrapper">
       <div style={{ maxWidth: 600, margin: "20px auto", padding: 0 }}>
+        <div style={{ marginBottom: "20px" }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: "#f5f5f5",
+              border: "1px solid #ddd",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              color: "#666",
+              fontSize: "14px",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "#e8f4fd";
+              e.target.style.borderColor = "#1e88e5";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "#f5f5f5";
+              e.target.style.borderColor = "#ddd";
+            }}
+          >
+            ← Back to Dashboard
+          </button>
+        </div>
         <div
           className="card"
           style={{ boxShadow: "0 8px 32px rgba(30, 136, 229, 0.2)" }}

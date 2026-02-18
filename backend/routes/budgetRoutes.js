@@ -12,6 +12,7 @@ router.get(
   budgetController.getCategoriesSummary,
 );
 router.get("/recent", authMiddleware, budgetController.getRecentActions);
+router.get("/member-stats", authMiddleware, budgetController.getMemberStats);
 router.put("/edit", authMiddleware, budgetController.editItem);
 router.delete("/delete", authMiddleware, budgetController.deleteItem);
 

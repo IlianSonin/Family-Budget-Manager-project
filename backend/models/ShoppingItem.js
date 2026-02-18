@@ -12,6 +12,13 @@ const shoppingItemSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    boughtBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    boughtAt: {
+      type: Date,
+    },
     name: {
       type: String,
       required: true,
@@ -24,9 +31,17 @@ const shoppingItemSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
     isPurchased: {
       type: Boolean,
       default: false,
+    },
+    date: {
+      type: String, // YYYY-MM
+      required: true,
     },
   },
   { timestamps: true },

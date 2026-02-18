@@ -10,9 +10,10 @@ const permissionRoutes = require("./routes/permissionRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const shoppingRoutes = require("./routes/shoppingRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
+const reminderRoutes = require("./routes/reminderRoutes");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // middlewares
 app.use(cors());
@@ -26,6 +27,7 @@ app.use("/api/permission", permissionRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/shopping", shoppingRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/reminders", reminderRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running");

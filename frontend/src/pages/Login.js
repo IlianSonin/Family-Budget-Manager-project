@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,14 +19,28 @@ function Login() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", {
+      console.log("🔐 Attempting login for:", email);
+      const res = await api.post("/auth/login", {
         email,
         password,
       });
 
+      console.log("✅ Login response:", {
+        hasToken: !!res.data.token,
+        tokenLength: res.data.token?.length,
+      });
       localStorage.setItem("token", res.data.token);
+      console.log(
+        "💾 Token stored in localStorage:",
+        localStorage.getItem("token") ? "YES" : "NO",
+      );
+
       navigate("/home");
     } catch (err) {
+      console.log(
+        "❌ Login failed:",
+        err.response?.data?.message || err.message,
+      );
       setError(
         err.response?.data?.message || "Login failed. Please try again.",
       );

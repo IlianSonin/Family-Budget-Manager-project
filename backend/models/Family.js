@@ -16,8 +16,13 @@ const familySchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    adminId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Family", familySchema);

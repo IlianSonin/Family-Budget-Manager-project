@@ -1,6 +1,7 @@
 const EditPermission = require("../models/EditPermission");
 const BudgetItem = require("../models/BudgetItem");
 const User = require("../models/User");
+const Family = require("../models/Family");
 
 // Request permission to edit another user's budget item
 exports.requestEditPermission = async (req, res) => {
@@ -96,9 +97,17 @@ exports.approveEditPermission = async (req, res) => {
       return res.status(404).json({ message: "Permission request not found" });
     }
 
-    // Only the item owner can approve
-    if (permission.itemOwner.toString() !== req.userId) {
-      return res.status(403).json({ message: "Unauthorized" });
+    // Check if user is the item owner or family admin
+    const user = await User.findById(req.userId);
+    const family = await Family.findById(user.familyId);
+
+    const isOwner = permission.itemOwner.toString() === req.userId;
+    const isAdmin = family && family.adminId.toString() === req.userId;
+
+    if (!isOwner && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Only the item owner or family admin can approve" });
     }
 
     permission.status = "approved";
@@ -130,9 +139,17 @@ exports.rejectEditPermission = async (req, res) => {
       return res.status(404).json({ message: "Permission request not found" });
     }
 
-    // Only the item owner can reject
-    if (permission.itemOwner.toString() !== req.userId) {
-      return res.status(403).json({ message: "Unauthorized" });
+    // Check if user is the item owner or family admin
+    const user = await User.findById(req.userId);
+    const family = await Family.findById(user.familyId);
+
+    const isOwner = permission.itemOwner.toString() === req.userId;
+    const isAdmin = family && family.adminId.toString() === req.userId;
+
+    if (!isOwner && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Only the item owner or family admin can reject" });
     }
 
     permission.status = "rejected";

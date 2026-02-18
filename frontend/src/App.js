@@ -12,12 +12,14 @@ import Settings from "./pages/Settings";
 import { NotificationProvider } from "./context/NotificationContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import NotificationContainer from "./components/NotificationContainer";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <SettingsProvider>
       <NotificationProvider>
         <NotificationContainer />
+        <Toaster position="top-right" />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Navigate to="/home" />} />

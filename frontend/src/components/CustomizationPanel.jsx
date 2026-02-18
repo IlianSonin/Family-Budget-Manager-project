@@ -129,12 +129,30 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
           <button
             onClick={onClose}
             style={{
-              background: "none",
-              border: "none",
-              fontSize: "24px",
+              background: "#f5f5f5",
+              border: "1px solid #ddd",
+              fontSize: "18px",
               cursor: "pointer",
               color: "#666",
+              padding: "4px 8px",
+              borderRadius: "4px",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "#ffebee";
+              e.target.style.borderColor = "#f44336";
+              e.target.style.color = "#f44336";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "#f5f5f5";
+              e.target.style.borderColor = "#ddd";
+              e.target.style.color = "#666";
+            }}
+            title="Close"
           >
             ×
           </button>

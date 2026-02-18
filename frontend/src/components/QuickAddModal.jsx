@@ -72,8 +72,8 @@ function QuickAddModal({ onClose, onAdded, initialType = "expense" }) {
             setCustomCategory("");
           }}
         >
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
+          <option value="expense">Spending</option>
+          <option value="income">Earning</option>
         </select>
 
         {type === "expense" && (

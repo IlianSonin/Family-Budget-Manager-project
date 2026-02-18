@@ -1,53 +1,39 @@
 const mongoose = require("mongoose");
 
-const budgetItemSchema = new mongoose.Schema(
+const reminderSchema = new mongoose.Schema(
   {
     familyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Family",
       required: true,
     },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
-    attributedTo: {
+    assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    },
-
-    editedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
-
-    type: {
-      type: String,
-      enum: ["income", "expense"],
       required: true,
     },
-    category: {
+    title: {
       type: String,
-      required: true,
-    },
-    amount: {
-      type: Number,
       required: true,
     },
     note: {
       type: String,
-      default: "",
     },
-    date: {
-      type: String, // YYYY-MM
+    dueAt: {
+      type: Date,
       required: true,
+    },
+    isDone: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model("BudgetItem", budgetItemSchema);
+module.exports = mongoose.model("Reminder", reminderSchema);
