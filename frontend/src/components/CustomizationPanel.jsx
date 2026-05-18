@@ -462,7 +462,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
                     style={{ marginRight: "10px" }}
                   />
                   <span style={{ fontWeight: "500" }}>
-                    Show Shopping List Section
+                    Show Wishlist Section
                   </span>
                 </label>
                 <p
@@ -472,7 +472,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
                     color: "#666",
                   }}
                 >
-                  Display the shopping list card on your dashboard
+                  Display the wishlist card on your dashboard
                 </p>
               </div>
 
@@ -609,7 +609,7 @@ const CustomizationPanel = ({ isOpen, onClose }) => {
                 }}
               >
                 <h4 style={{ margin: "0 0 10px 0", color: "#333" }}>
-                  Shopping List Card
+                  Wishlist Card
                 </h4>
                 <div style={{ marginBottom: "10px" }}>
                   <label

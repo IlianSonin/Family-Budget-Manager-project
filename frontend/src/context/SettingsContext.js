@@ -11,8 +11,49 @@ export const useSettings = () => {
   return context;
 };
 
+const defaultSettings = {
+  theme: {
+    primaryColor: "#1e88e5",
+    secondaryColor: "#64b5f6",
+    accentColor: "#e3f2fd",
+    backgroundGradient: {
+      start: "#f5f5f5",
+      end: "#e3f2fd",
+      direction: "135deg",
+    },
+  },
+  layout: {
+    showFamilyMembers: true,
+    showShoppingList: true,
+    showIncomeExpenses: true,
+    dashboardOrder: ["family", "budget", "shopping", "recent"],
+  },
+  components: {
+    familyCard: {
+      background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
+      borderRadius: "12px",
+      shadow: "0 4px 16px rgba(30, 136, 229, 0.15)",
+    },
+    budgetCard: {
+      background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
+      borderRadius: "12px",
+      shadow: "0 4px 16px rgba(106, 27, 154, 0.15)",
+    },
+    shoppingCard: {
+      background: "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
+      borderRadius: "12px",
+      shadow: "0 4px 16px rgba(76, 175, 80, 0.15)",
+    },
+    recentActionsCard: {
+      background: "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
+      borderRadius: "12px",
+      shadow: "0 4px 16px rgba(255, 152, 0, 0.15)",
+    },
+  },
+};
+
 export const SettingsProvider = ({ children }) => {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(defaultSettings);
   const [loading, setLoading] = useState(true);
 
   // Load settings on mount
@@ -31,47 +72,7 @@ export const SettingsProvider = ({ children }) => {
       setSettings(response.data);
     } catch (error) {
       console.error("Failed to load settings:", error);
-      // Set default settings if loading fails
-      setSettings({
-        theme: {
-          primaryColor: "#1e88e5",
-          secondaryColor: "#64b5f6",
-          accentColor: "#e3f2fd",
-          backgroundGradient: {
-            start: "#f5f5f5",
-            end: "#e3f2fd",
-            direction: "135deg",
-          },
-        },
-        layout: {
-          showFamilyMembers: true,
-          showShoppingList: true,
-          showIncomeExpenses: true,
-          dashboardOrder: ["family", "budget", "shopping", "recent"],
-        },
-        components: {
-          familyCard: {
-            background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-            borderRadius: "12px",
-            shadow: "0 4px 16px rgba(30, 136, 229, 0.15)",
-          },
-          budgetCard: {
-            background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
-            borderRadius: "12px",
-            shadow: "0 4px 16px rgba(106, 27, 154, 0.15)",
-          },
-          shoppingCard: {
-            background: "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
-            borderRadius: "12px",
-            shadow: "0 4px 16px rgba(76, 175, 80, 0.15)",
-          },
-          recentActionsCard: {
-            background: "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
-            borderRadius: "12px",
-            shadow: "0 4px 16px rgba(255, 152, 0, 0.15)",
-          },
-        },
-      });
+      // Keep the default settings already in state
     } finally {
       setLoading(false);
     }

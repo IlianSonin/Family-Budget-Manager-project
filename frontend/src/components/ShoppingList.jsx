@@ -17,8 +17,8 @@ function ShoppingList({ onPurchase, month }) {
       const response = await api.get("/shopping/list", { params });
       setItems(response.data);
     } catch (error) {
-      console.error("Failed to load shopping list:", error);
-      addNotification("Failed to load shopping list", "error");
+      console.error("Failed to load wishlist:", error);
+      addNotification("Failed to load wishlist", "error");
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ function ShoppingList({ onPurchase, month }) {
       setNewNote("");
       setNewPrice("");
       loadShoppingList();
-      addNotification("Item added to shopping list", "success");
+      addNotification("Item added to wishlist", "success");
     } catch (error) {
       console.error("Failed to add item:", error);
       addNotification("Failed to add item", "error");
@@ -77,9 +77,9 @@ function ShoppingList({ onPurchase, month }) {
   if (loading) {
     return (
       <div className="card">
-        <h3>Shopping List</h3>
+        <h3>Wishlist</h3>
         <div style={{ textAlign: "center", padding: "20px" }}>
-          Loading shopping list...
+          Loading wishlist...
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ function ShoppingList({ onPurchase, month }) {
 
   return (
     <div className="card">
-      <h3>Shopping List</h3>
+      <h3>Wishlist</h3>
 
       {/* Add new item form */}
       <form onSubmit={addItem} style={{ marginBottom: "20px" }}>
@@ -161,10 +161,10 @@ function ShoppingList({ onPurchase, month }) {
         </div>
       </form>
 
-      {/* Shopping list items */}
+      {/* Wishlist items */}
       {items.length === 0 ? (
         <p style={{ textAlign: "center", color: "#666", padding: "20px" }}>
-          No items in shopping list
+          No items in wishlist
         </p>
       ) : (
         <div>

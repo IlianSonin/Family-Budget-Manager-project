@@ -203,7 +203,7 @@ if (loading) return <Text align="center" size="lg">Loading dashboard...</Text>;
                 }}
                 style={{ minWidth: 120 }}
               >
-                View Shopping List
+                View Wishlist
               </Button>
             </div>
           )}
@@ -368,12 +368,12 @@ if (loading) return <Text align="center" size="lg">Loading dashboard...</Text>;
             </Grid.Col>
           </Grid>
 
-          {/* Shopping List */}
+          {/* Wishlist */}
           {settings?.layout?.showShoppingList && (
             <Card withBorder radius="md" id="shopping-list">
               <Card.Section withBorder inheritPadding py="sm">
                 <Group position="apart">
-                  <Text weight={500}>Shopping List</Text>
+                  <Text weight={500}>Wishlist</Text>
                   <ActionIcon variant="light" onClick={() => navigate("/budget/add")}>
                     <IconPlus size={16} />
                   </ActionIcon>
@@ -631,7 +631,7 @@ export default Dashboard;
             </a>
           </div>
 
-          {/* Shopping List */}
+          {/* Wishlist */}
           {settings?.layout?.showShoppingList && (
             <div id="shopping-list">
               <ShoppingList />
@@ -926,7 +926,7 @@ export default Dashboard;
                 }}
                 style={{ minWidth: 120 }}
               >
-                View Shopping List
+                View Wishlist
               </button>
             </div>
           )}

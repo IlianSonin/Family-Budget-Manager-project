@@ -98,133 +98,84 @@ function Dashboard() {
 
   const loadData = useCallback(
     async (showLoading = true) => {
+      if (showLoading) {
+        setError(null);
+        setLoading(true);
+      }
+
       try {
-        if (showLoading) {
-          setError(null);
-          setLoading(true);
-        }
+        // Fire all requests in parallel for faster load
+        const [
+          summaryResult,
+          categoriesResult,
+          familyResult,
+          recentResult,
+          memberStatsResult,
+          remindersResult,
+          meResult,
+        ] = await Promise.allSettled([
+          api.get("/budget/summary", { params: { month: selectedMonth } }),
+          api.get("/budget/categories", { params: { month: selectedMonth } }),
+          api.get("/family/my"),
+          api.get("/budget/recent", { params: { month: selectedMonth } }),
+          api.get("/budget/member-stats", { params: { month: selectedMonth } }),
+          remindersAPI.getReminders(selectedMonth),
+          api.get("/auth/me"),
+        ]);
 
-        console.log("Loading data for month:", selectedMonth);
-
-        // Load data individually to handle errors better
-        let summaryRes = {
-          data: { income: 0, expenses: 0, balance: 0, items: [] },
-        };
-        try {
-          summaryRes = await api.get("/budget/summary", {
-            params: { month: selectedMonth },
-          });
-        } catch (summaryError) {
-          console.log(
-            "Budget summary failed (expected if no family):",
-            summaryError.response?.data?.message,
-          );
-          // Use default empty data
-        }
-
-        let categoriesRes = { data: [] };
-        try {
-          categoriesRes = await api.get("/budget/categories", {
-            params: { month: selectedMonth },
-          });
-        } catch (categoriesError) {
-          console.log(
-            "Budget categories failed (expected if no family):",
-            categoriesError.response?.data?.message,
-          );
-          // Use default empty data
-        }
-
-        // Family data might fail if user has no family, so handle it separately
-        let familyRes = { data: null };
-        try {
-          familyRes = await api.get("/family/my");
-        } catch (familyError) {
-          console.log(
-            "Family data failed (expected if no family):",
-            familyError.response?.data?.message,
-          );
-          // Don't fail the whole load if family fails
-        }
-
-        let recentRes = { data: [] };
-        try {
-          recentRes = await api.get("/budget/recent", {
-            params: { month: selectedMonth },
-          });
-        } catch (recentError) {
-          console.log(
-            "Recent budget items failed (expected if no family):",
-            recentError.response?.data?.message,
-          );
-          // Use default empty data
-        }
-
-        // Member stats might fail if user has no family, so handle it separately
-        let memberStatsRes = { data: [] };
-        try {
-          memberStatsRes = await api.get("/budget/member-stats", {
-            params: { month: selectedMonth },
-          });
-        } catch (memberStatsError) {
-          console.log(
-            "Member stats failed (expected if no family):",
-            memberStatsError.response?.data?.message,
-          );
-          // Don't fail the whole load if member stats fails
-        }
-
-        // Load reminders
-        let remindersRes = { data: [] };
-        try {
-          remindersRes = await remindersAPI.getReminders(selectedMonth);
-        } catch (remindersError) {
-          console.log(
-            "Reminders failed:",
-            remindersError.response?.data?.message,
-          );
-        }
-
-        let meRes = { data: null };
-        try {
-          meRes = await api.get("/auth/me");
-        } catch (meError) {
-          console.log("Auth me failed:", meError.response?.data?.message);
-          // If auth fails, redirect to login
-          if (meError.response?.status === 401) {
+        // Check auth first — redirect if 401
+        if (meResult.status === "rejected") {
+          const status = meResult.reason?.response?.status;
+          if (status === 401) {
             localStorage.removeItem("token");
             navigate("/login");
             return;
           }
-          throw meError; // Re-throw if not auth error
+          throw meResult.reason;
         }
 
-        setFamily(familyRes.data);
-        setSummary(summaryRes.data);
-        setCategories(categoriesRes.data);
-        setRecent(recentRes.data);
-        setMemberStats(memberStatsRes.data);
-        setReminders(remindersRes.data);
-        setCurrentUser(meRes.data);
+        const summary =
+          summaryResult.status === "fulfilled"
+            ? summaryResult.value.data
+            : { income: 0, expenses: 0, balance: 0, items: [] };
 
-        // Debug: Log family members for reminder creation
-        console.log("Family data loaded:", {
-          familyName: familyRes.data?.name || "No family",
-          memberCount: familyRes.data?.members?.length || 0,
-          members:
-            familyRes.data?.members?.map((m) => ({
-              name: m.name,
-              id: m._id,
-            })) || [],
-          currentUserId: meRes.data._id,
-        });
+        const categories =
+          categoriesResult.status === "fulfilled"
+            ? categoriesResult.value.data
+            : [];
+
+        const family =
+          familyResult.status === "fulfilled" ? familyResult.value.data : null;
+
+        const recent =
+          recentResult.status === "fulfilled" ? recentResult.value.data : [];
+
+        const memberStats =
+          memberStatsResult.status === "fulfilled"
+            ? memberStatsResult.value.data
+            : [];
+
+        const reminders =
+          remindersResult.status === "fulfilled"
+            ? remindersResult.value.data
+            : [];
+
+        const me = meResult.value.data;
+
+        // Batch all state updates together
+        setSummary(summary);
+        setCategories(categories);
+        setFamily(family);
+        setRecent(recent);
+        setMemberStats(memberStats);
+        setReminders(reminders);
+        setCurrentUser(me);
       } catch (err) {
         console.log(
           "Dashboard error:",
           err.response?.data?.message || err.message,
         );
 
-        // If unauthorized, redirect to login
         if (err.response?.status === 401) {
           localStorage.removeItem("token");
           navigate("/login");
@@ -324,7 +275,7 @@ function Dashboard() {
       try {
         await api.delete("/budget/delete", { data: { budgetItemId: itemId } });
         addNotification("Item deleted successfully", "success", 2000);
-        loadData(true); // Refresh the data with loading state
+        loadData(false);
       } catch (err) {
         addNotification("Failed to delete item", "error", 2000);
       }
@@ -367,7 +318,7 @@ function Dashboard() {
           "success",
           3000,
         );
-        loadData(true);
+        loadData(false);
       } catch (err) {
         addNotification("Failed to remove member", "error", 3000);
       }
@@ -387,7 +338,7 @@ function Dashboard() {
           "success",
           3000,
         );
-        loadData(true);
+        loadData(false);
       } catch (err) {
         addNotification("Failed to transfer admin rights", "error", 3000);
       }
@@ -397,7 +348,7 @@ function Dashboard() {
   const handleDeleteFamily = async () => {
     if (
       window.confirm(
-        "Are you sure you want to delete the entire family? This action cannot be undone and will remove all family data including budget items, messages, and shopping lists.",
+        "Are you sure you want to delete the entire family? This action cannot be undone and will remove all family data including budget items, messages, and wishlists.",
       )
     ) {
       const confirmText = window.prompt(
@@ -430,86 +381,6 @@ function Dashboard() {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <div
-        className="fab-container"
-        style={{
-          position: "fixed",
-          bottom: 20,
-          right: 20,
-          zIndex: 10000,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-        }}
-      >
-        {fabOpen && (
-          <div
-            className="fab-menu"
-            style={{
-              marginBottom: 10,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              zIndex: 10001,
-            }}
-          >
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                setShowAdd(true);
-                setFabOpen(false);
-              }}
-              style={{ minWidth: 120 }}
-            >
-              Add Budget Item
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                setShowAddIncome(true);
-                setFabOpen(false);
-              }}
-              style={{ minWidth: 120 }}
-            >
-              Add Budget Income
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => {
-                const shoppingList = document.getElementById("shopping-list");
-                if (shoppingList) {
-                  shoppingList.scrollIntoView({ behavior: "smooth" });
-                }
-                setFabOpen(false);
-              }}
-              style={{ minWidth: 120 }}
-            >
-              View Shopping List
-            </button>
-          </div>
-        )}
-        <button
-          className="fab"
-          onClick={() => setFabOpen(!fabOpen)}
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            background: "#1e88e5",
-            color: "white",
-            border: "none",
-            fontSize: 24,
-            cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(30, 136, 229, 0.3)",
-            transition: "transform 0.2s ease",
-            zIndex: 10000,
-          }}
-        >
-          {fabOpen ? "×" : "+"}
-        </button>
-      </div>
-
       <div
         className="page-wrapper"
         style={{
@@ -1075,7 +946,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Shopping List */}
+          {/* Wishlist */}
           {settings?.layout?.showShoppingList && (
             <div id="shopping-list">
               <ShoppingList
@@ -1500,7 +1371,7 @@ function Dashboard() {
             onClose={() => setShowAdd(false)}
             onAdded={() => {
               setShowAdd(false);
-              loadData(true);
+              loadData(false);
             }}
           />
         )}
@@ -1511,7 +1382,7 @@ function Dashboard() {
             onClose={() => setEditingItemId(null)}
             onSaved={() => {
               setEditingItemId(null);
-              loadData(true);
+              loadData(false);
             }}
           />
         )}
@@ -1529,7 +1400,7 @@ function Dashboard() {
           onClose={() => setShowAddIncome(false)}
           onAdded={() => {
             setShowAddIncome(false);
-            loadData(true);
+            loadData(false);
           }}
         />
       )}
@@ -1555,6 +1426,7 @@ function Dashboard() {
                 flexDirection: "column",
                 gap: 8,
                 zIndex: 10001,
+                alignItems: "stretch",
               }}
             >
               <button
@@ -1563,9 +1435,9 @@ function Dashboard() {
                   setShowAdd(true);
                   setFabOpen(false);
                 }}
-                style={{ minWidth: 120 }}
+                style={{ minWidth: 160 }}
               >
-                Add Budget
+                Add Budget Item
               </button>
               <button
                 className="btn btn-primary"
@@ -1573,9 +1445,9 @@ function Dashboard() {
                   setShowAddIncome(true);
                   setFabOpen(false);
                 }}
-                style={{ minWidth: 120 }}
+                style={{ minWidth: 160 }}
               >
-                Add Budget
+                Add Budget Income
               </button>
               <button
                 className="btn btn-secondary"
@@ -1586,9 +1458,9 @@ function Dashboard() {
                   }
                   setFabOpen(false);
                 }}
-                style={{ minWidth: 120 }}
+                style={{ minWidth: 160 }}
               >
-                View Shopping List
+                View Wishlist
               </button>
             </div>
           )}

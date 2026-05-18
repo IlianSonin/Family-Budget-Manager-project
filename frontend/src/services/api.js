@@ -10,31 +10,11 @@ api.interceptors.request.use((req) => {
     req.headers.Authorization = `Bearer ${token}`;
   }
 
-  // Log auth requests
-  if (req.url.includes("/auth/login") || req.url.includes("/auth/me")) {
-    console.log(`🔐 API Request: ${req.method?.toUpperCase()} ${req.url}`, {
-      hasToken: !!token,
-      token: token ? `${token.substring(0, 20)}...` : "none",
-    });
-  }
-
   return req;
 });
 
 api.interceptors.response.use(
   (response) => {
-    // Log auth responses
-    if (
-      response.config.url.includes("/auth/login") ||
-      response.config.url.includes("/auth/me")
-    ) {
-      console.log(
-        `✅ API Response: ${response.status} ${response.config.url}`,
-        {
-          data: response.data,
-        },
-      );
-    }
     return response;
   },
   (error) => {

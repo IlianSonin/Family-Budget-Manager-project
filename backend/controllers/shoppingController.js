@@ -134,13 +134,6 @@ exports.markAsPurchased = async (req, res) => {
         date: month,
       };
 
-      console.log("🛒 Creating BudgetItem:", {
-        itemName: item.name,
-        buyerId: req.userId,
-        requesterId: item.createdBy,
-        budgetItemData,
-      });
-
       const createdBudgetItem = await BudgetItem.create(budgetItemData);
 
       // Verify the item was saved correctly
@@ -148,19 +141,9 @@ exports.markAsPurchased = async (req, res) => {
         .populate("createdBy", "name")
         .populate("attributedTo", "name");
 
-      console.log("💾 VERIFIED BudgetItem saved to DB:", {
-        id: savedItem._id,
-        amount: savedItem.amount,
-        category: savedItem.category,
-        createdBy:
-          savedItem.createdBy?.name + " (" + savedItem.createdBy?._id + ")",
-        attributedTo:
-          savedItem.attributedTo?.name +
-          " (" +
-          savedItem.attributedTo?._id +
-          ")",
-        note: savedItem.note,
-        fullDoc: savedItem,
+      res.status(201).json({
+        message: "Item marked as purchased and added to budget",
+        budgetItem: savedItem,
       });
     }
 
